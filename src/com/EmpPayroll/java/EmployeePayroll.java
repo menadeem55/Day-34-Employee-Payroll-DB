@@ -25,7 +25,7 @@ public class EmployeePayroll {
 				Double salary = result.getDouble(4);
 				String date = result.getString(5);
 				System.out.println(
-						"id:- " + id + " Name:- " + " Gender:- " + " | " + " Salary:- " + salary + " Date:- " + date);
+						"id:- " + id + " Name:- " + name + " Gender:- " + " | " + " Salary:- " + salary + " Date:- " + date);
 			}
 
 		} catch (SQLException e) {
