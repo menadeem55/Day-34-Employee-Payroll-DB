@@ -3,13 +3,25 @@ package com.EmpPayroll.java;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Enumeration;
 
 public class EmployeePayroll {
-	public static void main(String[] args) {
+	static Connection con = null;
+
+	public static void main(String[] args) throws EmployeeCustomException, SQLException {
+		con = connected();
+		reteriveData(con);
+
+	}
+
+	public static Connection connected() throws EmployeeCustomException {
 		String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false"; // declare JdbcURL
 		String UserName = "root";
 		String Password = "rootroot";
+		Connection connection = null;
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver"); // inbuilt method for Class.forName for loading driver
@@ -19,23 +31,37 @@ public class EmployeePayroll {
 			e.printStackTrace(); // for tracing the exception
 
 		}
-		listDrivers();
+		listDrivers();		//	static method calling
 		try {
 			System.out.println("Connecting to Database...:" + jdbcURL); // for loading the drive for connect
-			Connection connection = DriverManager.getConnection(jdbcURL, UserName, Password); // creating object for
-																								// connection
-			System.out.println("coneection successfull");
+			connection = DriverManager.getConnection(jdbcURL, UserName, Password);
+			System.out.println("coneection successfull" + connection);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 
 		}
+		return connection;
 
+	}
+
+	public static void reteriveData(Connection connection) throws EmployeeCustomException, SQLException {
+		PreparedStatement ps = connection.prepareStatement("Select * from employee_payroll");
+		ResultSet result = ps.executeQuery();
+		while (result.next()) {
+			System.out.print(result.getInt(1));
+			System.out.print(" | ");
+			System.out.print(result.getString(2));
+			System.out.print(" | ");
+			System.out.print(result.getString(3));
+			System.out.print(" | ");
+			System.out.println();
+		}
 	}
 
 	public static void listDrivers() {
 		Enumeration<Driver> driverList = DriverManager.getDrivers();
-		while (driverList.hasMoreElements()) {
+		while (driverList.hasMoreElements()) {				//static method for itteration.
 			Driver driverClass = (Driver) driverList.nextElement();
 			System.out.println(" " + driverClass.getClass().getName());
 
